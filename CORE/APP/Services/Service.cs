@@ -45,7 +45,11 @@ namespace CORE.APP.Services
                 await SaveAsync(cancellationToken);
         }
 
-        protected virtual async Task<int> SaveAsync(CancellationToken cancellationToken) => await _db.SaveChangesAsync(cancellationToken); 
+        protected virtual async Task<int> SaveAsync(CancellationToken cancellationToken) => await _db.SaveChangesAsync(cancellationToken);
+
+        public IQueryable<TRelationalEntity> DbSet<TRelationalEntity>() where TRelationalEntity : Entity, new() => _db.Set<TRelationalEntity>().AsNoTracking();
+
+        protected void Delete<TRelationalEntity>(List<TRelationalEntity> relationalEntities) where TRelationalEntity : Entity, new() => _db.Set<TRelationalEntity>().RemoveRange(relationalEntities);
 
         public void Dispose()
         {
