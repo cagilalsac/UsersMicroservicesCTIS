@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Users.APP\Users.APP.csproj" />
     <ProjectReference Include="..\UsersMicroservicesCTIS.ServiceDefaults\UsersMicroservicesCTIS.ServiceDefaults.csproj" />
   </ItemGroup>
 

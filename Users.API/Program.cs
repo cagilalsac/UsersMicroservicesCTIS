@@ -1,8 +1,13 @@
+using Users.APP.Domain;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("UsersDb");
+
+builder.Services.AddDbContext<UsersDb>(options => options.UseSqlite())
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
