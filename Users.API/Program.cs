@@ -1,13 +1,20 @@
+using Microsoft.EntityFrameworkCore;
 using Users.APP.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("UsersDb");
+// Add services to the container. IoC (Inversion of Control) Container
+// For DbContext Injection
+var connectionString = builder.Configuration.GetConnectionString(nameof(UsersDb)); // "UsersDb"
+builder.Services.AddDbContext<DbContext, UsersDb>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddDbContext<UsersDb>(options => options.UseSqlite())
+// For Mediator Injection
+foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+{
+    builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(assembly));
+}
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
