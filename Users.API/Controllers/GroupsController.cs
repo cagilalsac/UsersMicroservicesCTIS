@@ -22,7 +22,23 @@ namespace Users.API.Controllers
         {
             var query = await _mediator.Send(new GroupQueryRequest());
             var list = await query.ToListAsync();
-            return Ok(list);
+            return Ok(list); // 200
+            // NotFound // 404
+            // BadRequest // 400
+            // InternalServerError // 500
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var query = await _mediator.Send(new GroupQueryRequest());
+            var item = await query.SingleOrDefaultAsync(q => q.Id == id);
+            if (item is null)
+                return NotFound(); // 404
+            return Ok(item); // 200
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(GroupCreateRequest request)
     }
 }
