@@ -28,7 +28,7 @@ namespace Users.API.Controllers
             // InternalServerError // 500
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // api/Groups/20
         public async Task<IActionResult> Get(int id)
         {
             var query = await _mediator.Send(new GroupQueryRequest());
@@ -40,5 +40,37 @@ namespace Users.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Post(GroupCreateRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
+                if (response.IsSuccessful)
+                    return Ok(response);
+                return BadRequest(response); // 400
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(GroupUpdateRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
+                if (response.IsSuccessful)
+                    return Ok(response);
+                return BadRequest(response); // 400
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete("{id}")] // api/Groups/17: route
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _mediator.Send(new GroupDeleteRequest { Id = id });
+            if (response.IsSuccessful)
+                return NoContent(); // 204
+            return BadRequest(response); // 400
+        }
     }
 }
