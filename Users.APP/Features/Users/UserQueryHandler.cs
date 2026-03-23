@@ -3,6 +3,7 @@ using CORE.APP.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Users.APP.Domain;
+using Users.APP.Features.Groups;
 
 namespace Users.APP.Features.Users
 {
@@ -57,6 +58,8 @@ namespace Users.APP.Features.Users
         public string Group { get; set; } // "CTIS", "Bilkent"
 
         public string Roles { get; set; } // "Admin", "User"
+
+        public GroupQueryResponse GroupResponse { get; set; }
     }
 
     public class UserQueryHandler : Service<User>, IRequestHandler<UserQueryRequest, IQueryable<UserQueryResponse>>
@@ -67,9 +70,18 @@ namespace Users.APP.Features.Users
             //CultureInfo = new CultureInfo("tr-TR");
         }
 
+        // base query
+        // select * from Users
+        // overridden query
+        // select * from Users inner join Groups on Users.GroupId = Groups.Id order by IsActive desc, RegistrationDate desc, UserName 
+        protected override IQueryable<User> DbSet()
+        {
+            return base.DbSet().Include(userEntity => userEntity.Group).OrderByDescending(userEntity => userEntity.IsActive).ThenByDescending(userEntity => userEntity.RegistrationDate).ThenBy(userEntity => userEntity.UserName);
+        }
+
         public Task<IQueryable<UserQueryResponse>> Handle(UserQueryRequest request, CancellationToken cancellationToken)
         {
-            var query = DbSet().OrderByDescending(userEntity => userEntity.IsActive).ThenByDescending(userEntity => userEntity.RegistrationDate).ThenBy(userEntity => userEntity.UserName).Select(userEntity => new UserQueryResponse
+            var query = DbSet().Select(userEntity => new UserQueryResponse
             {
                 // entity data
                 Address = userEntity.Address,
@@ -95,8 +107,18 @@ namespace Users.APP.Features.Users
                 GenderF = userEntity.Gender.ToString(), // "Man", "Woman"
                 RegistrationDateF = userEntity.RegistrationDate.ToString("MM/dd/yyyy HH:mm:ss"),
                 BirthDateF = userEntity.BirthDate.HasValue ? userEntity.BirthDate.Value.ToString("MM/dd/yyyy") : string.Empty,
+                
+                Roles = string.Join(", ", userEntity.UserRoles.Select(userRoleEntity => userRoleEntity.Role.Name)),
+
+                // Way 1:
                 Group = userEntity.Group.Title,
-                Roles = string.Join(", ", userEntity.UserRoles.Select(userRoleEntity => userRoleEntity.Role.Name))
+
+                // Way 2:
+                GroupResponse = new GroupQueryResponse
+                {
+                    Id = userEntity.Group.Id,
+                    Title = userEntity.Group.Title
+                }
             });
 
             return Task.FromResult(query);
