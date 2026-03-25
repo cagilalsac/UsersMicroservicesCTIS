@@ -39,13 +39,18 @@ namespace Users.APP.Features.Users
 
         public int? GroupId { get; set; } // 0 to M relationship
 
-        public List<int> RoleIds { get; set; }
+        public List<int> RoleIds { get; set; } = new List<int>();
     }
 
     public class UserUpdateHandler : Service<User>, IRequestHandler<UserUpdateRequest, CommandResponse>
     {
         public UserUpdateHandler(DbContext db) : base(db)
         {
+        }
+
+        protected override IQueryable<User> DbSet()
+        {
+            return base.DbSet().Include(u => u.UserRoles);
         }
 
         public async Task<CommandResponse> Handle(UserUpdateRequest request, CancellationToken cancellationToken)
@@ -57,6 +62,10 @@ namespace Users.APP.Features.Users
             if (entity is null)
                 return Error("User not found!");
 
+            // delete relational roles through UserRoles
+            Delete(entity.UserRoles);
+
+            entity.RoleIds = request.RoleIds; // assign new role ids
             entity.GroupId = request.GroupId;
             entity.Gender = request.Gender;
             entity.FirstName = request.FirstName.Trim();
@@ -68,7 +77,6 @@ namespace Users.APP.Features.Users
             entity.LastName = request.LastName.Trim();
             entity.Password = request.Password;
             entity.RegistrationDate = request.RegistrationDate;
-            entity.RoleIds = request.RoleIds;
             entity.Score = request.Score;
             entity.UserName = request.UserName.Trim();
 

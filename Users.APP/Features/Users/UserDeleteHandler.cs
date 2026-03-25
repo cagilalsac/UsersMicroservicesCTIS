@@ -16,11 +16,20 @@ namespace Users.APP.Features.Users
         {
         }
 
+        protected override IQueryable<User> DbSet()
+        {
+            return base.DbSet().Include(u => u.UserRoles);
+        }
+
         public async Task<CommandResponse> Handle(UserDeleteRequest request, CancellationToken cancellationToken)
         {
             var entity = await DbSet().SingleOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
             if (entity is null)
                 return Error("User not found!");
+
+            // delete relational roles through UserRoles
+            Delete(entity.UserRoles);
+
             await DeleteAsync(entity, cancellationToken);
             return Success("User deleted successfully.", entity.Id);
         }

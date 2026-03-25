@@ -39,7 +39,7 @@ namespace Users.APP.Features.Users
 
         public int? GroupId { get; set; } // 0 to M relationship
 
-        public List<int> RoleIds { get; set; }
+        public List<int> RoleIds { get; set; } = new List<int>();
     }
 
     public class UserCreateHandler : Service<User>, IRequestHandler<UserCreateRequest, CommandResponse>

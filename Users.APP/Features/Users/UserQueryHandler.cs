@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Users.APP.Domain;
 using Users.APP.Features.Groups;
+using Users.APP.Features.Roles;
 
 namespace Users.APP.Features.Users
 {
@@ -22,7 +23,7 @@ namespace Users.APP.Features.Users
 
         public string LastName { get; set; }
 
-        public int Gender { get; set; } // 1, 2
+        public Genders Gender { get; set; } // 1: Woman, 2: Man
 
         public DateTime? BirthDate { get; set; }
 
@@ -55,11 +56,13 @@ namespace Users.APP.Features.Users
 
         public string IsActiveF { get; set; } // "Active", "Inactive"
 
-        public string Group { get; set; } // "CTIS", "Bilkent"
+        public string GroupF { get; set; } // "CTIS", "Bilkent"
 
-        public string Roles { get; set; } // "Admin", "User"
+        public List<string> RolesF { get; set; } // "Admin", "User"
 
-        public GroupQueryResponse GroupResponse { get; set; }
+        public GroupQueryResponse Group { get; set; }
+
+        public List<RoleQueryResponse> Roles { get; set; }
     }
 
     public class UserQueryHandler : Service<User>, IRequestHandler<UserQueryRequest, IQueryable<UserQueryResponse>>
@@ -76,7 +79,9 @@ namespace Users.APP.Features.Users
         // select * from Users inner join Groups on Users.GroupId = Groups.Id order by IsActive desc, RegistrationDate desc, UserName 
         protected override IQueryable<User> DbSet()
         {
-            return base.DbSet().Include(userEntity => userEntity.Group).OrderByDescending(userEntity => userEntity.IsActive).ThenByDescending(userEntity => userEntity.RegistrationDate).ThenBy(userEntity => userEntity.UserName);
+            return base.DbSet().Include(userEntity => userEntity.Group)
+                .Include(userEntity => userEntity.UserRoles).ThenInclude(userRoleEntity => userRoleEntity.Role)
+                .OrderByDescending(userEntity => userEntity.IsActive).ThenByDescending(userEntity => userEntity.RegistrationDate).ThenBy(userEntity => userEntity.UserName);
         }
 
         public Task<IQueryable<UserQueryResponse>> Handle(UserQueryRequest request, CancellationToken cancellationToken)
@@ -89,7 +94,7 @@ namespace Users.APP.Features.Users
                 CityId = userEntity.CityId,
                 CountryId = userEntity.CountryId,
                 FirstName = userEntity.FirstName,
-                Gender = (int)userEntity.Gender,
+                Gender = userEntity.Gender,
                 GroupId = userEntity.GroupId,
                 Id = userEntity.Id,
                 IsActive = userEntity.IsActive,
@@ -108,17 +113,23 @@ namespace Users.APP.Features.Users
                 RegistrationDateF = userEntity.RegistrationDate.ToString("MM/dd/yyyy HH:mm:ss"),
                 BirthDateF = userEntity.BirthDate.HasValue ? userEntity.BirthDate.Value.ToString("MM/dd/yyyy") : string.Empty,
                 
-                Roles = string.Join(", ", userEntity.UserRoles.Select(userRoleEntity => userRoleEntity.Role.Name)),
-
                 // Way 1:
-                Group = userEntity.Group.Title,
-
+                GroupF = userEntity.Group.Title,
                 // Way 2:
-                GroupResponse = new GroupQueryResponse
+                Group = new GroupQueryResponse
                 {
                     Id = userEntity.Group.Id,
                     Title = userEntity.Group.Title
-                }
+                },
+
+                // Way 1:
+                RolesF = userEntity.UserRoles.Select(userRoleEntity => userRoleEntity.Role.Name).ToList(),
+                // Way 2:
+                Roles = userEntity.UserRoles.Select(userRoleEntity => new RoleQueryResponse
+                {
+                    Id = userRoleEntity.Role.Id,
+                    Name = userRoleEntity.Role.Name,
+                }).ToList()
             });
 
             return Task.FromResult(query);
