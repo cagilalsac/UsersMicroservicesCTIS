@@ -18,7 +18,25 @@ namespace Users.API.Controllers
         }
 
         [HttpPost]
+        [Route("~/api/Token")] // api/Token
         public async Task<IActionResult> Token(TokenRequest request)
+        {
+            request.SecurityKey = _configuration["SecurityKey"];
+            request.Issuer = _configuration["Issuer"];
+            request.Audience = _configuration["Audience"];
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
+                if (response is null)
+                    return BadRequest("User not found!");
+                return Ok(response);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost]
+        [Route("~/api/RefreshToken")] // api/RefreshToken
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
         {
             request.SecurityKey = _configuration["SecurityKey"];
             request.Issuer = _configuration["Issuer"];

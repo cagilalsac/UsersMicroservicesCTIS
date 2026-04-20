@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GroupsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,6 +20,7 @@ namespace Users.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get() // Action
         {
             var query = await _mediator.Send(new GroupQueryRequest());
@@ -39,6 +42,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(GroupCreateRequest request)
         {
             if (ModelState.IsValid)
@@ -52,6 +56,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(GroupUpdateRequest request)
         {
             if (ModelState.IsValid)
@@ -65,6 +70,7 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("{id}")] // api/Groups/17: route
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _mediator.Send(new GroupDeleteRequest { Id = id });

@@ -20,6 +20,11 @@ namespace Users.APP.Features.Tokens
             _tokenAuthService = tokenAuthService;
         }
 
+        protected override IQueryable<User> DbSet()
+        {
+            return base.DbSet().Include(u => u.UserRoles).ThenInclude(ur => ur.Role);
+        }
+
         public async Task<TokenResponse> Handle(TokenRequest request, CancellationToken cancellationToken)
         {
             var user = await DbSet().SingleOrDefaultAsync(u => u.UserName == request.UserName && u.Password == request.Password && u.IsActive, cancellationToken);
