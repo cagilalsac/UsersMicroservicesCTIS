@@ -1,6 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using Users.APP.Domain;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the IoC (Inversion of Control) container.
+builder.Services.AddDbContext<DbContext, UsersDb>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString(nameof(UsersDb))
+));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

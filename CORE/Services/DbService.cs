@@ -26,6 +26,20 @@ namespace CORE.Services
             CancellationToken cancellationToken = default) 
             => await DbQuery().AsTracking().SingleOrDefaultAsync(predicate, cancellationToken);
 
+        // Way 1:
+        //protected virtual async Task<int> DbSaveAsync(CancellationToken cancellationToken = default)
+        //{
+        //    try
+        //    {
+        //        return await _db.SaveChangesAsync(cancellationToken);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        // Logging operations
+        //        return -1;
+        //    }
+        //}
+        // Way 2:
         protected virtual async Task<int> DbSaveAsync(CancellationToken cancellationToken = default)
             => await _db.SaveChangesAsync(cancellationToken);
 
