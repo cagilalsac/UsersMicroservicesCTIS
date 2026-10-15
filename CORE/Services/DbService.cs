@@ -43,7 +43,7 @@ namespace CORE.Services
         protected virtual async Task<int> DbSaveAsync(CancellationToken cancellationToken = default)
             => await _db.SaveChangesAsync(cancellationToken);
 
-        protected async Task DbAdd(TEntity entity, CancellationToken cancellationToken = default, 
+        protected async Task DbAddAsync(TEntity entity, CancellationToken cancellationToken = default, 
             bool save = true)
         {
             _db.Set<TEntity>().Add(entity);
@@ -53,7 +53,7 @@ namespace CORE.Services
             }
         }
 
-        protected async Task DbUpdate(TEntity entity, CancellationToken cancellationToken = default,
+        protected async Task DbUpdateAsync(TEntity entity, CancellationToken cancellationToken = default,
            bool save = true)
         {
             _db.Set<TEntity>().Update(entity);
@@ -63,7 +63,7 @@ namespace CORE.Services
             }
         }
 
-        protected async Task DbRemove(TEntity entity, CancellationToken cancellationToken = default,
+        protected async Task DbRemoveAsync(TEntity entity, CancellationToken cancellationToken = default,
           bool save = true)
         {
             _db.Set<TEntity>().Remove(entity);
