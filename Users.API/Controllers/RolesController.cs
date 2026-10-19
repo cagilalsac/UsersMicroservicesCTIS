@@ -105,63 +105,63 @@ namespace Users.API.Controllers
         }
 
         //// PUT: api/Roles
-        //[HttpPut]
-        //public async Task<IActionResult> Put(RoleUpdateRequest request)
-        //{
-        //    try
-        //    {
-        //        // Check if the request model is valid through data annotations
-        //        if (ModelState.IsValid)
-        //        {
-        //            // Send the update request
-        //            var response = await _mediator.Send(request);
-        //            // If update is successful, return 200 OK with success command response
-        //            if (response.IsSuccessful)
-        //            {
-        //                //return NoContent();
-        //                return Ok(response);
-        //            }
-        //            // If update failed, add error command response message to model state
-        //            ModelState.AddModelError("RolesPut", response.Message);
-        //        }
-        //        // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
-        //        return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        // Log the exception
-        //        _logger.LogError("RolesPut Exception: " + exception.Message);
-        //        // Return 500 Internal Server Error with an error command response with message
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during RolesPut.")); 
-        //    }
-        //}
+        [HttpPut]
+        public async Task<IActionResult> Put(RoleUpdateRequest request)
+        {
+            try
+            {
+                // Check if the request model is valid through data annotations
+                if (ModelState.IsValid)
+                {
+                    // Send the update request
+                    var response = await _mediator.Send(request);
+                    // If update is successful, return 200 OK with success command response
+                    if (response.IsSuccessful)
+                    {
+                        //return NoContent();
+                        return Ok(response);
+                    }
+                    // If update failed, add error command response message to model state
+                    ModelState.AddModelError("RolesPut", response.Message);
+                }
+                // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
+                return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                // Log the exception
+                _logger.LogError("RolesPut Exception: " + exception.Message);
+                // Return 500 Internal Server Error with an error command response with message
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during RolesPut."));
+            }
+        }
 
-        //// DELETE: api/Roles/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        // Send the delete request
-        //        var response = await _mediator.Send(new RoleRemoveRequest() { Id = id });
-        //        // If delete is successful, return 200 OK with success command response
-        //        if (response.IsSuccessful)
-        //        {
-        //            //return NoContent();
-        //            return Ok(response);
-        //        }
-        //        // If delete failed, add error command response message to model state
-        //        ModelState.AddModelError("RolesDelete", response.Message);
-        //        // Return 400 Bad Request with the error command response message
-        //        return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        // Log the exception
-        //        _logger.LogError("RolesDelete Exception: " + exception.Message);
-        //        // Return 500 Internal Server Error with an error command response with message
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during RolesDelete.")); 
-        //    }
-        //}
-	}
+        // DELETE: api/Roles/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                // Send the delete request
+                var response = await _mediator.Send(new RoleRemoveRequest() { Id = id });
+                // If delete is successful, return 200 OK with success command response
+                if (response.IsSuccessful)
+                {
+                    //return NoContent();
+                    return Ok(response);
+                }
+                // If delete failed, add error command response message to model state
+                ModelState.AddModelError("RolesDelete", response.Message);
+                // Return 400 Bad Request with the error command response message
+                return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                // Log the exception
+                _logger.LogError("RolesDelete Exception: " + exception.Message);
+                // Return 500 Internal Server Error with an error command response with message
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during RolesDelete."));
+            }
+        }
+    }
 }
