@@ -3,6 +3,8 @@ using CORE.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Users.APP.Domain;
+using Users.APP.Features.Roles;
+using Users.APP.Features.Statuses;
 
 namespace Users.APP.Features.Users
 {
@@ -48,9 +50,17 @@ namespace Users.APP.Features.Users
 
         public string IsOnlineR { get; set; }
 
+        // Way 1:
         public string StatusTitleR { get; set; }
 
+        // Way 2:
+        public StatusQueryResponse StatusR { get; set; }
+
+        // Way 1:
         public string RoleNamesR { get; set; }
+
+        // Way 2:
+        public List<RoleQueryResponse> RolesR { get; set; }
     }
 
     public class UserQueryHandler : DbService<User>,
@@ -60,7 +70,14 @@ namespace Users.APP.Features.Users
         {
         }
 
-        // TODO: Include
+        protected override IQueryable<User> DbQuery()
+        {
+            return base.DbQuery().Include(u => u.Status)
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .OrderByDescending(u => u.Score)
+                .ThenByDescending(u => u.RegistrationDate).ThenBy(u => u.UserName);
+            ;
+        }
 
         public Task<IQueryable<UserQueryResponse>> Handle(UserQueryRequest request, CancellationToken cancellationToken)
         {
@@ -87,8 +104,23 @@ namespace Users.APP.Features.Users
                 RegistrationDateR = u.RegistrationDate.ToString("MM/dd/yyyy HH:mm:ss"),
                 BirthDateR = u.BirthDate.HasValue ? u.BirthDate.Value.ToShortDateString()
                     : string.Empty,
+                // Way 1:
                 StatusTitleR = u.Status.Title,
-                RoleNamesR = string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))
+                // Way 2:
+                StatusR = new StatusQueryResponse
+                {
+                    Id = u.Status.Id,
+                    Title = u.Status.Title
+                },
+                // Way 1:
+                RoleNamesR = string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name)),
+                // Way 2:
+                RolesR = u.UserRoles.OrderBy(ur => ur.Role.Name)
+                    .Select(ur => new RoleQueryResponse
+                    {
+                        Id = ur.Role.Id,
+                        Name = ur.Role.Name
+                    }).ToList()
             });
             return Task.FromResult(query);
         }
