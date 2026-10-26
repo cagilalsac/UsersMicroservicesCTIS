@@ -72,96 +72,96 @@ namespace Users.API.Controllers
             }
         }
 
-		//// POST: api/Users
-  //      [HttpPost]
-  //      public async Task<IActionResult> Post(UserAddRequest request)
-  //      {
-  //          try
-  //          {
-  //              // Check if the request model is valid through data annotations
-  //              if (ModelState.IsValid)
-  //              {
-  //                  // Send the create request
-  //                  var response = await _mediator.Send(request);
-  //                  // If creation is successful, return 200 OK with success command response
-  //                  if (response.IsSuccessful)
-  //                  {
-  //                      //return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
-  //                      return Ok(response);
-  //                  }
-  //                  // If creation failed, add error command response message to model state
-  //                  ModelState.AddModelError("UsersPost", response.Message);
-  //              }
-  //              // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
-  //              return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-  //          }
-  //          catch (Exception exception)
-  //          {
-  //              // Log the exception
-  //              _logger.LogError("UsersPost Exception: " + exception.Message);
-  //              // Return 500 Internal Server Error with an error command response with message
-  //              return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPost.")); 
-  //          }
-  //      }
+        // POST: api/Users
+        [HttpPost]
+        public async Task<IActionResult> Post(UserAddRequest request)
+        {
+            try
+            {
+                // Check if the request model is valid through data annotations
+                if (ModelState.IsValid)
+                {
+                    // Send the create request
+                    var response = await _mediator.Send(request);
+                    // If creation is successful, return 200 OK with success command response
+                    if (response.IsSuccessful)
+                    {
+                        //return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
+                        return Ok(response);
+                    }
+                    // If creation failed, add error command response message to model state
+                    ModelState.AddModelError("UsersPost", response.Message);
+                }
+                // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
+                return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                // Log the exception
+                _logger.LogError("UsersPost Exception: " + exception.Message);
+                // Return 500 Internal Server Error with an error command response with message
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPost."));
+            }
+        }
 
-  //      // PUT: api/Users
-  //      [HttpPut]
-  //      public async Task<IActionResult> Put(UserUpdateRequest request)
-  //      {
-  //          try
-  //          {
-  //              // Check if the request model is valid through data annotations
-  //              if (ModelState.IsValid)
-  //              {
-  //                  // Send the update request
-  //                  var response = await _mediator.Send(request);
-  //                  // If update is successful, return 200 OK with success command response
-  //                  if (response.IsSuccessful)
-  //                  {
-  //                      //return NoContent();
-  //                      return Ok(response);
-  //                  }
-  //                  // If update failed, add error command response message to model state
-  //                  ModelState.AddModelError("UsersPut", response.Message);
-  //              }
-  //              // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
-  //              return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-  //          }
-  //          catch (Exception exception)
-  //          {
-  //              // Log the exception
-  //              _logger.LogError("UsersPut Exception: " + exception.Message);
-  //              // Return 500 Internal Server Error with an error command response with message
-  //              return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPut.")); 
-  //          }
-  //      }
+        // PUT: api/Users
+        [HttpPut]
+        public async Task<IActionResult> Put(UserUpdateRequest request)
+        {
+            try
+            {
+                // Check if the request model is valid through data annotations
+                if (ModelState.IsValid)
+                {
+                    // Send the update request
+                    var response = await _mediator.Send(request);
+                    // If update is successful, return 200 OK with success command response
+                    if (response.IsSuccessful)
+                    {
+                        //return NoContent();
+                        return Ok(response);
+                    }
+                    // If update failed, add error command response message to model state
+                    ModelState.AddModelError("UsersPut", response.Message);
+                }
+                // Return 400 Bad Request with all data annotation validation error messages and the error command response message if added seperated by |
+                return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                // Log the exception
+                _logger.LogError("UsersPut Exception: " + exception.Message);
+                // Return 500 Internal Server Error with an error command response with message
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersPut."));
+            }
+        }
 
-  //      // DELETE: api/Users/5
-  //      [HttpDelete("{id}")]
-  //      public async Task<IActionResult> Delete(int id)
-  //      {
-  //          try
-  //          {
-  //              // Send the delete request
-  //              var response = await _mediator.Send(new UserRemoveRequest() { Id = id });
-  //              // If delete is successful, return 200 OK with success command response
-  //              if (response.IsSuccessful)
-  //              {
-  //                  //return NoContent();
-  //                  return Ok(response);
-  //              }
-  //              // If delete failed, add error command response message to model state
-  //              ModelState.AddModelError("UsersDelete", response.Message);
-  //              // Return 400 Bad Request with the error command response message
-  //              return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-  //          }
-  //          catch (Exception exception)
-  //          {
-  //              // Log the exception
-  //              _logger.LogError("UsersDelete Exception: " + exception.Message);
-  //              // Return 500 Internal Server Error with an error command response with message
-  //              return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersDelete.")); 
-  //          }
-  //      }
-	}
+        // DELETE: api/Users/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                // Send the delete request
+                var response = await _mediator.Send(new UserRemoveRequest() { Id = id });
+                // If delete is successful, return 200 OK with success command response
+                if (response.IsSuccessful)
+                {
+                    //return NoContent();
+                    return Ok(response);
+                }
+                // If delete failed, add error command response message to model state
+                ModelState.AddModelError("UsersDelete", response.Message);
+                // Return 400 Bad Request with the error command response message
+                return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                // Log the exception
+                _logger.LogError("UsersDelete Exception: " + exception.Message);
+                // Return 500 Internal Server Error with an error command response with message
+                return StatusCode(StatusCodes.Status500InternalServerError, new CommandResponse(false, "An exception occured during UsersDelete."));
+            }
+        }
+    }
 }
