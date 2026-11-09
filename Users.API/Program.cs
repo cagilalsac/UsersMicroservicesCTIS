@@ -1,3 +1,4 @@
+using CORE.Authentication.Services;
 using Microsoft.EntityFrameworkCore;
 using Users.APP.Domain;
 
@@ -12,6 +13,7 @@ foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
     builder.Services.AddMediatR(
         config => config.RegisterServicesFromAssemblies(assembly));
 }
+builder.Services.AddScoped<IJwtAuthService, JwtAuthService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

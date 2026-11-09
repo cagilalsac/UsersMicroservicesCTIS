@@ -30,7 +30,7 @@ namespace Users.APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Users.APP.Domain.Status", b =>
@@ -41,12 +41,12 @@ namespace Users.APP.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(5)
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses", (string)null);
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Users.APP.Domain.User", b =>
@@ -77,6 +77,12 @@ namespace Users.APP.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("RefreshTokenExpiration")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("TEXT");
 
@@ -95,7 +101,7 @@ namespace Users.APP.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Users.APP.Domain.UserRole", b =>
@@ -116,7 +122,7 @@ namespace Users.APP.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Users.APP.Domain.User", b =>

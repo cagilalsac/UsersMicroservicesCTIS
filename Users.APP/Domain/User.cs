@@ -43,5 +43,10 @@ namespace Users.APP.Domain
                 RoleId = rId
             }).ToList();
         }
+
+        // Authentication
+        public string RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpiration { get; set; }
     }
 }
