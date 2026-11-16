@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.Models;
 using Users.APP.Features.Statuses;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Microservices Template.
 namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class StatusController : ControllerBase
     {
         private readonly ILogger<StatusController> _logger;
@@ -24,6 +26,7 @@ namespace Users.API.Controllers
 
         // GET: api/Status
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             try

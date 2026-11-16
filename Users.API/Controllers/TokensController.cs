@@ -32,5 +32,21 @@ namespace Users.API.Controllers
             }
             return BadRequest(ModelState);
         }
+
+        [HttpPost, Route("~/api/[action]")] // POST: api/RefreshToken
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                refreshTokenRequest.SecurityKey = _configuration["SecurityKey"];
+                refreshTokenRequest.Issuer = _configuration["Issuer"];
+                refreshTokenRequest.Audience = _configuration["Audience"];
+                var response = await _mediator.Send(refreshTokenRequest);
+                if (response is not null)
+                    return Ok(response);
+                return NotFound("User not found!");
+            }
+            return BadRequest(ModelState);
+        }
     }
 }

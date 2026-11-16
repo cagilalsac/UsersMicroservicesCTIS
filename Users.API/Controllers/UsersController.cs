@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.Models;
 using Users.APP.Features.Users;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Microservices Template.
 namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -74,6 +76,7 @@ namespace Users.API.Controllers
 
         // POST: api/Users
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(UserAddRequest request)
         {
             try
@@ -106,6 +109,7 @@ namespace Users.API.Controllers
 
         // PUT: api/Users
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(UserUpdateRequest request)
         {
             try
@@ -138,6 +142,7 @@ namespace Users.API.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

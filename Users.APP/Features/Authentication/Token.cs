@@ -30,8 +30,7 @@ namespace Users.APP.Features.Authentication
             if (userEntity is null)
                 return null;
             userEntity.RefreshToken = _jwtAuthService.GetRefreshToken();
-            // sliding expiration
-            //userEntity.RefreshTokenExpiration = DateTime.Now.AddDays(7);
+            userEntity.RefreshTokenExpiration = DateTime.Now.AddDays(7);
             await DbUpdateAsync(userEntity, cancellationToken);
             var expiration = DateTime.Now.AddMinutes(5);
             return _jwtAuthService.GetJwtResponse(userEntity.Id, userEntity.UserName,
